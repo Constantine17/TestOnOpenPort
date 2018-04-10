@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TestOnOpenPort;
+using System.Net;
 
 namespace TestOnOpenPort
 {
@@ -23,6 +25,22 @@ namespace TestOnOpenPort
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void WriteConsole(string text)
+        {
+            TextConsole.AppendText("\n" + text);
+        }
+
+        private void Run_Click(object sender, RoutedEventArgs e)
+        {
+            Action<string> write = WriteConsole;
+            PortConnector portConnector = new PortConnector(write, "8825");
+            portConnector.OpenConnection();
+        }
+
+        private void Time_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

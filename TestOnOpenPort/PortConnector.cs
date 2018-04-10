@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System;using System.Collections.Generic;  
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,29 +8,62 @@ namespace TestOnOpenPort
 {
     class PortConnector
     {
-        public string mesege = "";
+        public string messege = "";
         Action<string> ConsoleWrite;
+        string port;
 
-        public PortConnector(Action<string> write)
+        public PortConnector(Action<string> funWrite, string port)
         {
-            ConsoleWrite = write;
+            ConsoleWrite = funWrite;
+            this.port = port;
         }
 
-        public void OpenConnection()
+        private void WriteLog(string messege)
         {
-            HttpListener lisen = new HttpListener(); // запуск слушателя 
-            lisen.Prefixes.Add(@"http://192.168.1.17:8825/"); // адрес прослушки
-            ConsoleWrite("Создаем подключение");
+            ConsoleWrite(messege);
+            this.messege = messege;
+        }
+
+        public async void OpenConnection()
+        {
+            string host = Dns.GetHostName();
+            var addressesList = Dns.GetHostEntry(host).AddressList;
+
+            HttpListener lisen = new HttpListener(); // запуск слушателя
+            
+            foreach(var adress in addressesList)
+            {
+                if (adress.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork)
+                    continue;
+
+                string url = @"http://" + adress + ":" + port + "/";
+                lisen.Prefixes.Add(url); // адрес прослушки
+                WriteLog("Прослушивание по адрессу:  " + url);
+            }
 
             try
             {
                 lisen.Start();
-                ConsoleWrite("Соеденение открыто");
+                WriteLog("Соеденение открыто");
+
+                var context = await lisen.GetContextAsync();
+
+                var request = context.Request;
+                var response = context.Response;
+                var output = response.OutputStream;
+
+                output.Close();
+                WriteLog("Порт открыт");
             }
             catch (Exception ex)
             {
-                ConsoleWrite(ex.Message);
+                WriteLog(ex.Message);
             }
+        }
+
+        public void TestMthod()
+        {
+
         }
     }
 }

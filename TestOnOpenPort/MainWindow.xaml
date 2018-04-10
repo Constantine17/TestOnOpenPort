@@ -7,6 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Button x:Name="Run" Content="Test" HorizontalAlignment="Left" Margin="440,358,0,0" VerticalAlignment="Top" Width="76" Click="Run_Click"/>
+        <TextBox x:Name="TextConsole" HorizontalAlignment="Left" Margin="43,44,0,40" TextWrapping="Wrap" Text="TextBox" Width="368"/>
+        <Button x:Name="Time" Content="Button" HorizontalAlignment="Left" Margin="440,44,0,0" VerticalAlignment="Top" Width="74" Click="Time_Click"/>
+
     </Grid>
 </Window>
