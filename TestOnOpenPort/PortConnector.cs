@@ -1,8 +1,10 @@
-﻿using System;using System.Collections.Generic;  
+﻿using System;
+using System.Collections.Generic;  
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using System.IO;
 
 namespace TestOnOpenPort
 {
@@ -49,21 +51,23 @@ namespace TestOnOpenPort
                 var context = await lisen.GetContextAsync();
 
                 var request = context.Request;
+
                 var response = context.Response;
                 var output = response.OutputStream;
 
-                output.Close();
+                string text = "OK, port is opened. Your user host response adress: " + request.UserHostAddress;
+                byte[] byteArray = Encoding.UTF8.GetBytes(text); // string to stream
+                output.Write(byteArray, 0, byteArray.Length); // output date
+
+                output.Close(); // response
+
                 WriteLog("Порт открыт");
+                WriteLog("Адрес запроса: " + request.RemoteEndPoint);
             }
             catch (Exception ex)
             {
                 WriteLog(ex.Message);
             }
-        }
-
-        public void TestMthod()
-        {
-
         }
     }
 }
